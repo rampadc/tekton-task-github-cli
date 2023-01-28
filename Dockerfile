@@ -1,3 +1,5 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.7
+FROM registry.access.redhat.com/ubi8/ubi:8.7
 
-RUN microdnf install gh
+RUN dnf install -y 'dnf-command(config-manager)' && \
+     dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo
+RUN dnf install -y gh
