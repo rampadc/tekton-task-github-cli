@@ -1,0 +1,55 @@
+---
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: github-cli
+  labels:
+    app.kubernetes.io/version: "0.1"
+  annotations:
+    tekton.dev/categories: Git
+    tekton.dev/pipelines.minVersion: "0.17.0"
+    tekton.dev/tags: github
+    tekton.dev/displayName: "github cli"
+    tekton.dev/platforms: "linux/amd64"
+spec:
+  description: >-
+    This task can be used to perform GitHub operations via the GitHub CLI.
+    
+    GitHub commands that needs to be run can be passed as a script to the task.
+    This task needs authentication to GitHub.
+  workspaces:
+    - name: source
+      description: The workspace that contains the fetched git repository
+
+  params:
+    - name: GITHUB_HOST_URL
+      description: |
+        The GitHub host, adjust this if you run a GitHub enteprise.
+      default: "api.github.com"
+      type: string
+
+    - name: API_PATH_PREFIX
+      description: |
+        The API path prefix, GitHub Enterprise has a prefix e.g. /api/v3
+      default: ""
+      type: string
+
+    - name: GITHUB_SCRIPT
+      description: |
+        Script to run
+      type: string
+
+    - name: GITHUB_TOKEN_SECRET_NAME
+      description: |
+        The name of the Kubernetes Secret that contains the GitHub token.
+      type: string
+      default: github
+
+    - name: GITHUB_TOKEN_SECRET_KEY
+      description: |
+        The key within the Kubernetes Secret that contains the GitHub token.
+      type: string
+      default: token
+
+  steps:
+  
