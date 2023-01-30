@@ -28,12 +28,6 @@ spec:
       default: "api.github.com"
       type: string
 
-    - name: API_PATH_PREFIX
-      description: |
-        The API path prefix, GitHub Enterprise has a prefix e.g. /api/v3
-      default: ""
-      type: string
-
     - name: GITHUB_SCRIPT
       description: |
         Script to run
@@ -52,4 +46,17 @@ spec:
       default: token
 
   steps:
-  
+    - name: gh-cli
+      image: quay.io/congxdev/gh-cli:latest
+      workingDir: $(workspace.source.path)
+      env:
+        - name: GH_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: $(params.GITHUB_TOKEN_SECRET_NAME)
+              key: $(params.GITHUB_TOKEN_SECRET_KEY)
+        - name: GH_HOST
+          value: $(params.GITHUB_HOST_URL)
+      script: |
+        #!/usr/bin/env sh
+        eval '$(params.GITHUB_SCRIPT)'
